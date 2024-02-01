@@ -11,6 +11,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.android.material.navigation.NavigationView;
+
 public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
@@ -28,6 +30,18 @@ public class MainActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);/*导航按钮置为true*/
             actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);/*重写导航按钮样式，修改图标*/
         }
+
+        NavigationView navView = (NavigationView) findViewById(R.id.nav_view);/*获取NavigationView实例*/
+        navView.setCheckedItem(R.id.nav_call);/*设置默认选中call菜单*/
+        /*设置菜单项选中事件的监听器*/
+        navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {/*选中任意菜单，回调该方法*/
+                mDrawerLayout.closeDrawers();/*关闭滑动菜单*/
+                return true;
+            }
+        });
+
     }
 
     @Override
