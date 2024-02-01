@@ -1,7 +1,10 @@
 package com.example.materialtest;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.os.Bundle;
 import android.view.Menu;
@@ -10,12 +13,21 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
+    private DrawerLayout mDrawerLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);/*获取toolbar实例*/
+        setSupportActionBar(toolbar);/*传入toolbar实例*/
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);/*获取drawer_layout实例*/
+        ActionBar actionBar = getSupportActionBar();/*获取当前actionBar实例*/
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);/*导航按钮置为true*/
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);/*重写导航按钮样式，修改图标*/
+        }
     }
 
     @Override
@@ -26,12 +38,14 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "You clicked Settings", Toast.LENGTH_SHORT).show();
         } else if (item.getItemId() == R.id.delete) {
             Toast.makeText(this, "You clicked Delete", Toast.LENGTH_SHORT).show();
+        } else if (item.getItemId() == android.R.id.home) {/*重写导航按钮点击事件*/
+            mDrawerLayout.openDrawer(GravityCompat.START);/*1.显示导航菜单；2.显示位置根据系统语言调整*/
         }
         return true;
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar, menu);
+        getMenuInflater().inflate(R.menu.toolbar, menu);/*加载自定义toolbar布局*/
         return true;
     }
 }
