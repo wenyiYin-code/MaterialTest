@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.Menu;
@@ -16,10 +18,24 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
 
+    private Fruit[] fruits = {
+            new Fruit("Apple", R.drawable.apple), new Fruit("Banana",R.drawable.banana),
+            new Fruit("Orange", R.drawable.orange), new Fruit("Watermelon", R.drawable.watermelon),
+            new Fruit("Pear", R.drawable.pear), new Fruit("Grape", R.drawable.grape),
+            new Fruit("Pineapple", R.drawable.pineapple), new Fruit("Strawberry",R.drawable.strawberry),
+            new Fruit("Cherry", R.drawable.cherry), new Fruit("Mango", R.drawable.mango)};
+
+
+    private List<Fruit> fruitList = new ArrayList<>();
+    private FruitAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,11 +61,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);/*获取FloatingActionButton悬浮按钮实例*/
+        fab.setOnClickListener(new View.OnClickListener() {/*设置监听事件，点击响应逻辑....*/
             @Override
             public void onClick(View view) {
                 //Toast.makeText(MainActivity.this, "FAB clicked", Toast.LENGTH_SHORT).show();
+                /*高级提示框Smackbar，拥有可交互功能*/
                 Snackbar.make(view, "Data deleted", Snackbar.LENGTH_SHORT).setAction("Undo", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -58,7 +75,22 @@ public class MainActivity extends AppCompatActivity {
                 }).show();
             }
         });
+        initFruits();
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);//两列数据
+        recyclerView.setLayoutManager(layoutManager);
+        adapter = new FruitAdapter(fruitList);
+        recyclerView.setAdapter(adapter);
 
+    }
+
+    private void initFruits() {
+        fruitList.clear();
+        for (int i = 0; i < 50; i++) {
+            Random random = new Random();
+            int index = random.nextInt(fruits.length);
+            fruitList.add(fruits[index]);
+        }
     }
 
     @Override
