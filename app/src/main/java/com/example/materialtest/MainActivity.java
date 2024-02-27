@@ -7,6 +7,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Bundle;
 import android.view.Menu;
@@ -36,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
 
     private List<Fruit> fruitList = new ArrayList<>();
     private FruitAdapter adapter;
+
+    private SwipeRefreshLayout swipeRefresh;/*实现下拉刷新*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,6 +85,36 @@ public class MainActivity extends AppCompatActivity {
         adapter = new FruitAdapter(fruitList);
         recyclerView.setAdapter(adapter);
 
+
+        swipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);//实例化
+        swipeRefresh.setColorSchemeResources(R.color.colorPrimary);//设置颜色
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {//设置监听器
+            @Override
+            public void onRefresh() {
+                refreshFruits();
+            }
+        });
+    }
+
+    private void refreshFruits() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        initFruits();//重新生成数据
+                        adapter.notifyDataSetChanged();//通知适配器数据发生改变
+                        swipeRefresh.setRefreshing(false);//关闭进度条显示
+                    }
+                });
+            }
+        }).start();
     }
 
     private void initFruits() {
